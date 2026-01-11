@@ -1,0 +1,43 @@
+variable "express_route_connections" {
+  description = <<EOT
+Map of express_route_connections, attributes below
+Required:
+    - express_route_circuit_peering_id
+    - express_route_gateway_id
+    - name
+Optional:
+    - authorization_key
+    - enable_internet_security
+    - express_route_gateway_bypass_enabled
+    - private_link_fast_path_enabled
+    - routing_weight
+    - routing (block):
+        - associated_route_table_id (optional)
+        - inbound_route_map_id (optional)
+        - outbound_route_map_id (optional)
+        - propagated_route_table (optional, block):
+            - labels (optional)
+            - route_table_ids (optional)
+EOT
+
+  type = map(object({
+    express_route_circuit_peering_id     = string
+    express_route_gateway_id             = string
+    name                                 = string
+    authorization_key                    = optional(string)
+    enable_internet_security             = optional(bool)
+    express_route_gateway_bypass_enabled = optional(bool, false)
+    private_link_fast_path_enabled       = optional(bool)
+    routing_weight                       = optional(number, 0)
+    routing = optional(object({
+      associated_route_table_id = optional(string)
+      inbound_route_map_id      = optional(string)
+      outbound_route_map_id     = optional(string)
+      propagated_route_table = optional(object({
+        labels          = optional(set(string))
+        route_table_ids = optional(list(string))
+      }))
+    }))
+  }))
+}
+
