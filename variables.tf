@@ -26,9 +26,9 @@ EOT
     name                                 = string
     authorization_key                    = optional(string)
     enable_internet_security             = optional(bool)
-    express_route_gateway_bypass_enabled = optional(bool, false)
+    express_route_gateway_bypass_enabled = optional(bool) # Default: false
     private_link_fast_path_enabled       = optional(bool)
-    routing_weight                       = optional(number, 0)
+    routing_weight                       = optional(number) # Default: 0
     routing = optional(object({
       associated_route_table_id = optional(string)
       inbound_route_map_id      = optional(string)
