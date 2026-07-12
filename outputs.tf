@@ -1,3 +1,7 @@
+output "express_route_connections_id" {
+  description = "Map of id values across all express_route_connections, keyed the same as var.express_route_connections"
+  value       = { for k, v in azurerm_express_route_connection.express_route_connections : k => v.id }
+}
 output "express_route_connections_authorization_key" {
   description = "Map of authorization_key values across all express_route_connections, keyed the same as var.express_route_connections"
   value       = { for k, v in azurerm_express_route_connection.express_route_connections : k => v.authorization_key }
