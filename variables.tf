@@ -41,44 +41,30 @@ EOT
       }))
     }))
   }))
-  # --- Unconfirmed validation candidates, derived from azurerm_express_route_connection's provider source ---
-  # Not auto-enabled: either a bespoke provider validator we can't safely translate,
-  # or a path that crosses a list-typed block (needs its own for_each wrapping).
-  # Review, translate into a real validation{} block above, and delete once confirmed.
-  # path: name
-  #   source:    [from validate.ExpressRouteConnectionName] !matched
-  # path: express_route_circuit_peering_id
-  #   source:    [from commonids.ValidateExpressRouteCircuitPeeringID] !ok
-  # path: express_route_circuit_peering_id
-  #   source:    [from commonids.ValidateExpressRouteCircuitPeeringID] err != nil
-  # path: express_route_gateway_id
-  #   source:    [from expressroutegateways.ValidateExpressRouteGatewayID] !ok
-  # path: express_route_gateway_id
-  #   source:    [from expressroutegateways.ValidateExpressRouteGatewayID] err != nil
-  # path: authorization_key
-  #   condition: can(regex("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$", value))
-  #   message:   must be a valid UUID
-  # path: routing.inbound_route_map_id
-  #   source:    [from virtualwans.ValidateRouteMapID] !ok
-  # path: routing.inbound_route_map_id
-  #   source:    [from virtualwans.ValidateRouteMapID] err != nil
-  # path: routing.outbound_route_map_id
-  #   source:    [from virtualwans.ValidateRouteMapID] !ok
-  # path: routing.outbound_route_map_id
-  #   source:    [from virtualwans.ValidateRouteMapID] err != nil
-  # path: routing.associated_route_table_id
-  #   source:    [from virtualwans.ValidateHubRouteTableID] !ok
-  # path: routing.associated_route_table_id
-  #   source:    [from virtualwans.ValidateHubRouteTableID] err != nil
-  # path: routing.propagated_route_table.labels[*]
-  #   condition: length(value) > 0
-  #   message:   must not be empty
-  # path: routing.propagated_route_table.route_table_ids[*]
-  #   source:    [from virtualwans.ValidateHubRouteTableID] !ok
-  # path: routing.propagated_route_table.route_table_ids[*]
-  #   source:    [from virtualwans.ValidateHubRouteTableID] err != nil
-  # path: routing_weight
-  #   condition: value >= 0 && value <= 32000
-  #   message:   must be between 0 and 32000
+  validation {
+    condition = alltrue([
+      for k, v in var.express_route_connections : (
+        v.authorization_key == null || (can(regex("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$", v.authorization_key)))
+      )
+    ])
+    error_message = "must be a valid UUID"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.express_route_connections : (
+        v.routing == null || (v.routing.propagated_route_table == null || (v.routing.propagated_route_table.labels == null || (alltrue([for x in v.routing.propagated_route_table.labels : length(x) > 0]))))
+      )
+    ])
+    error_message = "must not be empty"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.express_route_connections : (
+        v.routing_weight == null || (v.routing_weight >= 0 && v.routing_weight <= 32000)
+      )
+    ])
+    error_message = "must be between 0 and 32000"
+  }
+  # Note: 13 additional provider-side validators are enforced at apply time but not mirrored as validation{} blocks here (bespoke or non-mechanically-translatable).
 }
 
