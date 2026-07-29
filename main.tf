@@ -5,10 +5,8 @@ resource "azurerm_express_route_connection" "express_route_connections" {
   express_route_gateway_id             = each.value.express_route_gateway_id
   name                                 = each.value.name
   authorization_key                    = each.value.authorization_key
-  enable_internet_security             = each.value.enable_internet_security
   express_route_gateway_bypass_enabled = each.value.express_route_gateway_bypass_enabled
   internet_security_enabled            = each.value.internet_security_enabled
-  private_link_fast_path_enabled       = each.value.private_link_fast_path_enabled
   routing_weight                       = each.value.routing_weight
 
   dynamic "routing" {

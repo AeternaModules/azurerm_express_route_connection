@@ -7,10 +7,8 @@ Required:
     - name
 Optional:
     - authorization_key
-    - enable_internet_security
     - express_route_gateway_bypass_enabled
     - internet_security_enabled
-    - private_link_fast_path_enabled
     - routing_weight
     - routing (block):
         - associated_route_table_id (optional)
@@ -26,10 +24,8 @@ EOT
     express_route_gateway_id             = string
     name                                 = string
     authorization_key                    = optional(string)
-    enable_internet_security             = optional(bool)
     express_route_gateway_bypass_enabled = optional(bool)
     internet_security_enabled            = optional(bool)
-    private_link_fast_path_enabled       = optional(bool)
     routing_weight                       = optional(number)
     routing = optional(object({
       associated_route_table_id = optional(string)
