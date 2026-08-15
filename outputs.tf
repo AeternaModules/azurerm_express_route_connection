@@ -36,7 +36,7 @@ output "express_route_connections_private_link_fast_path_enabled" {
 }
 output "express_route_connections_routing" {
   description = "Map of routing values across all express_route_connections, keyed the same as var.express_route_connections"
-  value       = { for k, v in azurerm_express_route_connection.express_route_connections : k => v.routing if v.routing != null && length(v.routing) > 0 }
+  value       = { for k, v in azurerm_express_route_connection.express_route_connections : k => one(v.routing) if v.routing != null && length(v.routing) > 0 }
 }
 output "express_route_connections_routing_weight" {
   description = "Map of routing_weight values across all express_route_connections, keyed the same as var.express_route_connections"
